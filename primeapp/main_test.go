@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"io"
 	"os"
 	"strings"
@@ -106,7 +107,7 @@ func Test_checkNumbers(t *testing.T) {
 	}{
 		{name: "empty", input: "", expected: "Please enter a whole number!"},
 		{name: "quit", input: "q", expected: ""},
-		{name: "zero", input: "0", expected: ""},
+		{name: "zero", input: "0", expected: "0 non è numero primo!"},
 	}
 
 	for _, e := range tests {
@@ -118,4 +119,16 @@ func Test_checkNumbers(t *testing.T) {
 			t.Errorf("%s: exepted is incorrect", e.name)
 		}
 	}
+}
+
+func Test_readUserInput(t *testing.T) {
+	doneChan := make(chan bool)
+
+	var stdin bytes.Buffer
+
+	stdin.Write([]byte("1\nq\n"))
+
+	go readUserInput(&stdin, doneChan)
+	<-doneChan
+	close(doneChan)
 }
